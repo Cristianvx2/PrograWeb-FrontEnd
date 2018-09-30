@@ -7,8 +7,12 @@ import {Modal,ControlLabel,FormGroup,FormControl,Button} from 'react-bootstrap';
 export class AddApartment extends React.Component {
   constructor(props){ //create a state to handle the new apartment
     super(props);
-    this.state = {name:"", parts:""};
+    this.state = {name:"", price: "", address:"", size:"", parts:""};
+
     this.handleApartmentNameChange=this.handleApartmentNameChange.bind(this);
+    this.handlePriceChange=this.handlePriceChange.bind(this);
+    this.handleAddressChange=this.handleAddressChange.bind(this);
+    this.handleSizeChange=this.handleSizeChange.bind(this);
     this.handleApartmentPartsChange=this.handleApartmentPartsChange.bind(this);
 
     this.handleSubmit = this.handleSubmit.bind(this);
@@ -17,6 +21,15 @@ export class AddApartment extends React.Component {
   //change name
   handleApartmentNameChange(e){
     this.setState({name: e.target.value});
+  }
+  handlePriceChange(e){
+    this.setState({price: e.target.value});
+  }
+  handleAddressChange(e){
+    this.setState({address: e.target.value});
+  }
+  handleSizeChange(e){
+    this.setState({size: e.target.value});
   }
   //change parts
   handleApartmentPartsChange(e){
@@ -28,16 +41,20 @@ export class AddApartment extends React.Component {
     const onAdd = this.props.onAdd;
     const regExp = /\s*,\s*/;
     var newName = this.state.name;
+    var newPrice = this.state.price;
+    var newAddress = this.state.address;
+    var newSize = this.state.size;
     var newParts = this.state.parts.split(regExp);
-    var newApartment = {name: newName, parts: newParts};
+
+    var newApartment = {name: newName, price: newPrice, address: newAddress, size: newSize, parts: newParts};
     onAdd(newApartment);
 
-    this.setState({name:"", parts:""});
+    this.setState({name:"", price:"", address:"", size:"", parts:""});
   }
 
   handleCancel(){
     const onAddModal = this.props.onAddModal;
-    this.setState({name:"", parts:""});
+    this.setState({name:"", price:"", address:"", size:"", parts:""});
     onAddModal();
   }
 
@@ -54,8 +71,20 @@ export class AddApartment extends React.Component {
           </Modal.Header>
           <Modal.Body>
             <FormGroup controlId="formControlsName">
-              <ControlLabel>Apartment Name</ControlLabel>
+              <ControlLabel>Name: </ControlLabel>
               <FormControl type="text" required onChange={this.handleApartmentNameChange} value={this.state.name} placeholder="Enter Name" />
+            </FormGroup>
+            <FormGroup controlId="formControlPrice">
+              <ControlLabel>Price: </ControlLabel>
+              <FormControl type="text" required onChange={this.handlePriceChange} value={this.state.price} placeholder="Enter Price" />
+            </FormGroup>
+            <FormGroup controlId="formControlAddress">
+              <ControlLabel>Address: </ControlLabel>
+              <FormControl type="text" required onChange={this.handleAddressChange} value={this.state.address} placeholder="Enter Address" />
+            </FormGroup>
+            <FormGroup controlId="formControlDimensions">
+              <ControlLabel>Dimensions: </ControlLabel>
+              <FormControl type="text" required onChange={this.handleSizeChange} value={this.state.size} placeholder="Enter Dimensions" />
             </FormGroup>
             <FormGroup controlId="formControlsParts">
               <ControlLabel>Apartment Parts</ControlLabel>

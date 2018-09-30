@@ -1,7 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import recipeBox from './recipeBox';
-import {PanelGroup, Panel, Button, ButtonToolbar,ListGroup,ListGroupItem} from 'react-bootstrap';
+import {PanelGroup, Panel, Button, ButtonToolbar,ListGroup,ListGroupItem, Col, Row, Grid} from 'react-bootstrap';
 import {Card, CardTitle, CardText} from 'reactstrap';
 import {AddApartment} from './components/addApartment';
 import {EditApartment} from './components/edit';
@@ -12,26 +11,7 @@ class Recipe extends React.Component{
     constructor(props){
         super(props);
         this.state = {
-            apartments:[
-                {
-                    name:"apartment a",
-                    parts:[
-                        "sala","cocina",        
-                    ] 
-                },
-                {
-                    name:"apartment b",
-                    parts:[
-                        "baño", "jardin", "lavanderia"
-                    ]
-                },
-                {
-                    name:"apartment c",
-                    parts:[
-                        "baño principal", "sotano", "parqueo","estudio"
-                    ]
-                }
-            ],
+            apartments:[],
             showAdd: false,
             showEdit: false,
             currentlyEditing: 0
@@ -41,6 +21,26 @@ class Recipe extends React.Component{
         this.addApartments = this.addApartments.bind(this);
         this.editApartment = this.editApartment.bind(this);
         this.deleteApartment = this.deleteApartment.bind(this);
+    }
+
+    componentDidMount(){
+        var apartments = (typeof localStorage["apartments"] !== "undefined") ? JSON.parse(localStorage.getItem("apartments")):[
+            {
+                name: "TRIBECA",
+                price: "Q.600,000",
+                address: "zona 11",
+                size: "61mts",
+                parts: ["pool", "Gym", "Garden", "BBQ"]
+            },
+            {
+                name: "BARI",
+                price: "Q.1,100,000",
+                address: "zona 10",
+                size: "80mts",
+                parts: ["2 parking spots", "2 bathrooms", "1 living room"]
+            }
+        ];
+        this.setState({apartments: apartments});
     }
     //Show Modals
     showAddModal(){
@@ -54,25 +54,29 @@ class Recipe extends React.Component{
     addApartments(apartment){
         let apartments = this.state.apartments;
         apartments.push(apartment);
+        localStorage.setItem('apartments', JSON.stringify(apartments));
 
         this.setState({apartments: apartments});
         this.showAddModal();
     }
-    editApartment(newName, newParts, currentlyEditing){//edit an exist apartment
+    editApartment(newName, newPrice, newAddress, newSize, newParts, currentlyEditing){//edit an exist apartment
         let apartment = this.state.apartments;
-        apartment[currentlyEditing] = {name: newName, parts: newParts};
+        apartment[currentlyEditing] = {name: newName, price: newPrice, address: newAddress, size: newSize, parts: newParts};
+        localStorage.setItem('apartments', JSON.stringify(apartment));
 
-        this.setState({apartment: apartment});
+        this.setState({apartments: apartment});
         this.showEditModal(currentlyEditing);
     }
     deleteApartment(index){
         let apartment = this.state.apartments.slice();
         apartment.splice(index, 1);
+        localStorage.setItem('apartments', JSON.stringify(apartment));
         this.setState({apartments: apartment, currentlyEditing: 0});
     }
 
     render(){
         const apartments = this.state.apartments;
+        var currentlyEditing = this.state.currentlyEditing;
         return(
             <div className="jumbotron">
                 <h1>APARTMENTS FOR RENT</h1>
@@ -80,18 +84,38 @@ class Recipe extends React.Component{
                     {apartments.map((apartment, index) =>(
                         <Panel eventKey={index} key={index}>
                             <Panel.Heading className="title text-center"><h3>{apartment.name}</h3></Panel.Heading>
-                                
-                            
-                            <Panel.Title  toggle>Caracteristicas:</Panel.Title>
+                            <Panel.Title  toggle><h5>Caracteristicas:</h5></Panel.Title>
                             <Panel.Body collapsible>
-                                <ListGroup>
-                                    {
-                                        apartment.parts.map((parts, index) => (
-                                            <ListGroupItem key = {index}>{parts}</ListGroupItem>
-                                        ))
-                                        
-                                    }
-                                </ListGroup>
+
+                                <Grid>
+                                    <Row className="show-grid">
+                                        <Col md={8}>
+                                            <Row className="well">
+                                                <Col md={2}><label>Precio: </label></Col>
+                                                <Col md={2}><h6>{apartment.price}</h6></Col>
+                                            </Row>
+                                            <Row className="well">
+                                                <Col md={2}><label>Direccion: </label></Col>
+                                                <Col md={2}><h6>{apartment.address}</h6></Col>
+                                            </Row>
+                                            <Row className="well">
+                                                <Col md={2}><label>Tamaño: </label></Col>
+                                                <Col md={2}><h6>{apartment.size}</h6></Col>
+                                            </Row>
+                                        </Col>
+                                        <Col md={4}> 
+                                            <h5>Espacios:</h5>
+                                            <ListGroup>
+                                                {
+                                                    apartment.parts.map((parts, index) => (
+                                                        <ListGroupItem key = {index}>{parts}</ListGroupItem>
+                                                    ))
+                                                    
+                                                }
+                                            </ListGroup>
+                                        </Col>
+                                    </Row>
+                                </Grid>
                                 <ButtonToolbar>
                                     <Button bsStyle="warning" onClick={() => {this.showEditModal(index)}}>Edit</Button>
                                     <Button bsStyle="danger" onClick={()=> {this.deleteApartment(index)}}>Delete</Button>
