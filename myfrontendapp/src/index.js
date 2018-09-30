@@ -79,7 +79,7 @@ class Recipe extends React.Component{
         var currentlyEditing = this.state.currentlyEditing;
         return(
             <div className="jumbotron">
-                <h1>APARTMENTS FOR RENT</h1>
+                <h1 className="text-primary">APARTMENTS FOR RENT</h1>
                 <PanelGroup accordion id="recipes">
                     {apartments.map((apartment, index) =>(
                         <Panel eventKey={index} key={index}>
@@ -118,7 +118,10 @@ class Recipe extends React.Component{
                                 </Grid>
                                 <ButtonToolbar>
                                     <Button bsStyle="warning" onClick={() => {this.showEditModal(index)}}>Edit</Button>
-                                    <Button bsStyle="danger" onClick={()=> {this.deleteApartment(index)}}>Delete</Button>
+                                    <Button bsStyle="danger" onClick={()=> { 
+                                        if(window.confirm('Seguro que desea eliminar este item?'))                                             
+                                            this.deleteApartment(index)
+                                        }}>Delete</Button>
                                 </ButtonToolbar>
                             </Panel.Body>
                             <EditApartment onShow = {this.state.showEdit} onEdit = {this.editApartment} 

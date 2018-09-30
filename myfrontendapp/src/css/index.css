@@ -11,3 +11,14 @@ h1, li, .title {
     list-style-type: none;
     font-size: 18px;
   }
+  body{
+    background-color: lightslategray;
+  }
+  .signature{
+    height: 60px;
+    font-weight: bolder;
+    font-size: 10px;
+    text-align: center;
+    color: white;
+    background-color: #00394d;
+}
